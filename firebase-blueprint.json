@@ -1,0 +1,209 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Farm products available for purchase from Kolli Hills",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique product identifier"
+        },
+        "nameEn": {
+          "type": "string",
+          "description": "Product name in English",
+          "maxLength": 100
+        },
+        "nameTa": {
+          "type": "string",
+          "description": "Product name in Tamil",
+          "maxLength": 100
+        },
+        "tagline": {
+          "type": "string",
+          "description": "Short farm description or origin",
+          "maxLength": 200
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit specification (e.g. 500g, Pack of 24)",
+          "maxLength": 50
+        },
+        "price": {
+          "type": "number",
+          "description": "Price in INR (₹)"
+        },
+        "stock": {
+          "type": "number",
+          "description": "Available stock quantity"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Product photo URL",
+          "maxLength": 500
+        },
+        "featured": {
+          "type": "boolean",
+          "description": "Whether highlighted on home page"
+        },
+        "origin": {
+          "type": "string",
+          "description": "Farm origin (e.g. Kolli Hills, Tamil Nadu)",
+          "maxLength": 100
+        }
+      },
+      "required": ["id", "nameEn", "nameTa", "price", "stock", "unit", "imageUrl"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order with 50% advance payment details",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique order identifier (e.g. DH-8241)",
+          "maxLength": 32
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Customer's full name",
+          "maxLength": 100
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "10-digit mobile number",
+          "pattern": "^[0-9]{10}$"
+        },
+        "deliveryAddress": {
+          "type": "string",
+          "description": "Complete delivery address including street, village/town, pincode",
+          "maxLength": 500
+        },
+        "items": {
+          "type": "string",
+          "description": "JSON serialized or item summary string of ordered products"
+        },
+        "productName": {
+          "type": "string",
+          "description": "Summary of products ordered",
+          "maxLength": 255
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Total quantity of items ordered"
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total order amount in INR (₹)"
+        },
+        "advancePaid": {
+          "type": "number",
+          "description": "50% advance payment made in INR (₹)"
+        },
+        "balanceDue": {
+          "type": "number",
+          "description": "Remaining 50% balance payable on delivery"
+        },
+        "paymentStatus": {
+          "type": "string",
+          "enum": ["Paid", "Pending", "Failed"],
+          "description": "Payment status of advance payment"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "UPI app or gateway used (Google Pay, PhonePe, Paytm, Razorpay)",
+          "maxLength": 50
+        },
+        "orderStatus": {
+          "type": "string",
+          "enum": ["Pending", "Confirmed", "Processing", "Shipped", "Delivered", "Cancelled"],
+          "description": "Order progression status"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of order placement"
+        },
+        "customerSmsSent": {
+          "type": "boolean",
+          "description": "Whether customer confirmation SMS was dispatched"
+        },
+        "adminSmsSent": {
+          "type": "boolean",
+          "description": "Whether admin alert SMS was dispatched"
+        }
+      },
+      "required": [
+        "id",
+        "customerName",
+        "phoneNumber",
+        "deliveryAddress",
+        "productName",
+        "quantity",
+        "totalAmount",
+        "advancePaid",
+        "paymentStatus",
+        "orderStatus",
+        "createdAt"
+      ]
+    },
+    "SMSLog": {
+      "title": "SMSLog",
+      "description": "Audit record of SMS sent to customer or admin",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Log record ID"
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Associated Order ID",
+          "maxLength": 32
+        },
+        "recipientType": {
+          "type": "string",
+          "enum": ["customer", "admin"],
+          "description": "Type of recipient"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "Recipient phone number",
+          "maxLength": 20
+        },
+        "message": {
+          "type": "string",
+          "description": "Full text of SMS message"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Sent", "Delivered", "Failed", "Simulated"],
+          "description": "Delivery status"
+        },
+        "gateway": {
+          "type": "string",
+          "description": "Gateway used (Fast2SMS, Twilio, MSG91, Daddy's Home Gateway)",
+          "maxLength": 50
+        },
+        "sentAt": {
+          "type": "string",
+          "description": "Timestamp of dispatch"
+        }
+      },
+      "required": ["id", "orderId", "recipientType", "phoneNumber", "message", "status", "sentAt"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Farm products catalog with live inventory tracking"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer purchase orders with 50% advance payment tracking"
+    },
+    "/smsLogs/{logId}": {
+      "schema": "SMSLog",
+      "description": "Audit logs of sent SMS notifications"
+    }
+  }
+}

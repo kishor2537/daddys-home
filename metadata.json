@@ -1,0 +1,6 @@
+{
+  "name": "Daddy's Home",
+  "description": "Mobile-first farm ecommerce app for fresh products from Kolli Hills with 50% advance payment and WhatsApp order notification system.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
